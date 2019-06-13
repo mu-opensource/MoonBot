@@ -1,9 +1,9 @@
 #include <MoonBot.h>
 void setup() {
-    TankBase.rpmCorrection(0, 0);              // motor RPM(Revolutions Per Minute) correction(for function `writeRpm()`)
-    TankBase.distanceCorrection(0);            // wheel distance correction(for function `writeDistance()`)
-    TankBase.wheelSpacingSet(0);               // wheel spacing set and correction(for function `writeAngle()`)
-    TankBase.begin(true, false, true);         // enable wheel, reverse left motor directions and enable encoder component
+    TankBase.rpmCorrection(100);                // motor RPM(Revolutions Per Minute) correction(for function `writeRpm()`)
+    TankBase.distanceCorrection(100);           // wheel distance correction(for function `writeDistance()`)
+    TankBase.wheelSpacingSet(100);              // wheel spacing set and correction(for function `writeAngle()`)
+    TankBase.begin();                           // enable wheel, reverse left motor directions and enable encoder component
 }
 void loop() {
   TankBase.writeRpm(30, 30);                   // set left and right motor speed 30RPM

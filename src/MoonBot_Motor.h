@@ -13,9 +13,6 @@
 #include "pins_moonbot.h"
 #include "Moonbot_Hardware_Version.h"
 
-static void motor1Interrupt(void);
-static void motor2Interrupt(void);
-
 class Motor {
 public:
   Motor(moonbot_motor_t motor_type);

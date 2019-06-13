@@ -45,12 +45,12 @@ int Motor::begin(const bool reverse_dir,
     if (enc_enable) {
       switch (motor_type_) {
         case kMotor1:
-          pin_enc_ = moonbotPortToPin(kPort4, kPortPin2);
+          pin_enc_ = moonbotPortToPin(kPort4, kPortPin1);
           pinMode(pin_enc_, INPUT);
           attachInterrupt(digitalPinToInterrupt(pin_enc_), motor1Interrupt, FALLING);
           break;
         case kMotor2:
-          pin_enc_ = moonbotPortToPin(kPort6, kPortPin2);
+          pin_enc_ = moonbotPortToPin(kPort6, kPortPin1);
           pinMode(pin_enc_, INPUT);
           attachInterrupt(digitalPinToInterrupt(pin_enc_), motor2Interrupt, FALLING);
           break;
@@ -94,7 +94,7 @@ void Motor::writeStep(uint32_t step, int rpm) {
     write(0);
     return;
   }
-  stop_enc_count_ = enc_count_+step*(100+(uint32_t)rpm_correction_)/100;
+  stop_enc_count_ = enc_count_+step*(uint32_t)rpm_correction_/100;
   en_step_event_ = true;
   writeRpm(rpm);
 }
@@ -117,8 +117,7 @@ void Motor::writeRpm(int rpm) {
   }
   time_start_ = micros();
   // wheel rev per minute => motor rev per second
-  speed_rev_ = abs(rpm*2*MOONBOT_MOTOR_REDUCTION_RATION/60)*(100+rpm_correction_)/100;
-//  start_enc_count_ = enc_count_;
+  speed_rev_ = abs(rpm*2*MOONBOT_MOTOR_REDUCTION_RATION/60)*rpm_correction_/100;
   en_rpm_event_ = true;
 }
 void Motor::rpmEvent(void) {
@@ -160,11 +159,11 @@ void Motor::rpmEvent(void) {
 }
 
 void Motor::writeDistance(int rpm, uint32_t distance_cm) {
-  uint32_t step = ((uint32_t)distance_correction_+100)
+  uint32_t step = (uint32_t)distance_correction_
       *(MOONBOT_MOTOR_REDUCTION_RATION*2)
       *distance_cm/(MOONBOT_WHEEL_DIAMETER*PI)
       /100;    // REDUCTION_RATIO*2*C/(d*pi)s
-  writeStep(rpm, step);
+  writeStep(step, rpm);
 }
 
 int Motor::read(void) {
@@ -174,7 +173,7 @@ int Motor::read(void) {
 
 int Motor::readRpm(void) {
   int sign = digitalRead(pin_dir_)==HIGH ? 1:-1;
-  return sign*current_rev_*60*100/(2*MOONBOT_MOTOR_REDUCTION_RATION)/(100+rpm_correction_);
+  return sign*current_rev_*60*100/(2*MOONBOT_MOTOR_REDUCTION_RATION)/rpm_correction_;
 }
 
 void Motor::motorIrq(void) {

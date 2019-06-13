@@ -14,6 +14,9 @@
 #include <SoftwareSerial.h>
 #include <AsyncDelay.h>
 
+#define LOWER_ARM_LEN   (60)    // mm
+#define UPPER_ARM_LEN   (160)    // mm
+
 enum moonbot_mech_grab_ball_t {
   kGrabedBall,
   kFollowBall,
@@ -25,8 +28,18 @@ enum moonbot_mech_shoot_ball_t {
   kUndetectCard,
 };
 
+enum claw_t {
+  kClawOpen,
+  kClawClose,
+  kClawForward,
+  kClawBackward,
+  kClawUp,
+  kClawDown,
+};
+
 class MoonBotMECH {
  public:
+  MoonBotMECH();
   MoonBotMECH(MuVisionSensor& Mu,
               MoonBotServo& claw,
               MoonBotServo& lower_arm,
@@ -38,18 +51,20 @@ class MoonBotMECH {
   int begin(void);
   void end(void);
 
-  // TODO claw open/close
-  // TODO up/down/forward/backward
-  // TODO draw
+  void setClaw(claw_t claw_type);
   bool searchBall(void);
   moonbot_mech_grab_ball_t grabBall(void);
   bool searchCard(void);
   moonbot_mech_shoot_ball_t shootBall(void);
 
-  MuVisionType card_type_ = VISION_TRAFFIC_CARD_DETECT;
+  bool getAngle(int x, int y, int* angle_u, int* angle_l);
+  void getClawPosition(int *x, int *y);
+  bool setClawPosition(int x = UPPER_ARM_LEN, int y = UPPER_ARM_LEN);
+
+  MuVisionType card_type_ = VISION_SHAPE_CARD_DETECT;
   // follow ball x center
   uint8_t ball_center_x_ = 50;
-  uint8_t ball_center_y_ = 50;
+  uint8_t ball_center_y_ = 40;
   // if ball_y >= ball_grab_y_value_, grab ball
   uint8_t ball_grab_y_ = 70;
   // follow card x center
@@ -70,13 +85,12 @@ class MoonBotMECH {
   AsyncDelay is_time2search_card_;
   unsigned long time2search_ball_ = 5000;
   unsigned long time2search_card_ = 5000;
-//  Stream* mySerial_ = NULL;
   MuVisionType vision_type_ = (MuVisionType)NULL;
 
   // servo angle init
-  uint8_t lower_arm_init_ = 175;
-  uint8_t lower_arm_grabbed_ = 60;
-  uint8_t upper_arm_grabbed_ = 160;
+  uint8_t lower_arm_init_ = 0;
+  uint8_t lower_arm_grabbed_ = 120;
+  uint8_t upper_arm_grabbed_ = 20;
   // claw open angle
   uint8_t claw_open_ = 120;
   // claw close angle
@@ -84,15 +98,18 @@ class MoonBotMECH {
   // Angle of upper servo grab ball
   uint8_t upper_arm_ready_grab_ = 90;
   // Angle of upper servo search ball
-  uint8_t upper_arm_init_ = 80;
-  uint8_t upper_arm_shoot_ = upper_arm_grabbed_-70;
-  uint8_t lower_arm_shoot_ = lower_arm_grabbed_+65;
+  uint8_t upper_arm_init_ = 100;
+  uint8_t upper_arm_shoot_ = upper_arm_grabbed_+70;
+  uint8_t lower_arm_shoot_ = lower_arm_grabbed_-65;
 
   const int ball_search_rpm_ = 100;
   const int ball_grab_rpm_ = 80;
   const int card_follow_rpm_ = 100;
   int ball_x_ = 50;
   int card_x_ = 50;
+
+  int claw_x = 0;
+  int claw_y = 0;
 };
 
 

@@ -25,6 +25,7 @@ enum moonbot_humannoid_motor_t {
 };
 class MoonBotHumannoid {
  public:
+  MoonBotHumannoid();
   MoonBotHumannoid(MuVisionSensor& Mu,
                    MoonBotServo& head,
                    MoonBotServo& left_arm,

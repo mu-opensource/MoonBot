@@ -7,6 +7,19 @@
 
 #include <MoonBot_Humannoid.h>
 
+extern MoonBotTankBase TankBase;
+extern MuVisionSensor Mu;
+extern MoonBotServo m_servo[kServoNum];
+
+MoonBotHumannoid::MoonBotHumannoid()
+    : Mu_(Mu),
+      head_(m_servo[kServo3]),
+      left_arm_(m_servo[kServo4]),
+      right_arm_(m_servo[kServo1]) {
+  head_.attach(kServo3, true);
+  left_arm_.attach(kServo4);
+  right_arm_.attach(kServo1, true);
+}
 
 MoonBotHumannoid::MoonBotHumannoid(MuVisionSensor& Mu,
              MoonBotServo& head,

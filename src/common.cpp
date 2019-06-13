@@ -9,10 +9,11 @@
 
 MuVisionSensor Mu(MU_VISION_SENSOR_DEFAULT_ADDRESS);
 WT2003S speaker;
-
-#ifdef __AVR_ATmega1280__
-
+LSM303AGR_IMU_Sensor IMU;
+MoonBotTankBase TankBase(Motor2, Motor1);
 Adafruit_NeoPixel onBoardLED(2, MOONBOT_PIN_LED, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel moonbot_eyes(MOONBOT_EXTERNAL_LED_NUM, moonbotPortToPin(kPort1, kPortPin1), NEO_GRB + NEO_KHZ800);
+MoonBotServo m_servo[kServoNum];
 
 uint8_t moonbotPortToPin(moonbot_port_t port_num, port_pin_t pin_num) {
   return pgm_read_byte(&moonbot_port[port_num][pin_num]);
@@ -25,8 +26,6 @@ uint8_t moonbotMotorToPin(moonbot_motor_t motor_num, motor_pin_t pin_type) {
 uint8_t moonbotServoToPin(moonbot_servo_t servo_num, servo_pin_t pin_type) {
   return pgm_read_byte(&moonbot_servo[servo_num][pin_type]);
 }
-
-#endif  //#ifdef __AVR_ATmega1280__
 
 static uint32_t Wheel_(byte WheelPos) {
   WheelPos = 255 - WheelPos;

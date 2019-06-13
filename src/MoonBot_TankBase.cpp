@@ -7,8 +7,6 @@
 
 #include <MoonBot_TankBase.h>
 
-MoonBotTankBase TankBase(Motor2, Motor1);
-
 MoonBotTankBase::MoonBotTankBase(Motor& left_motor,
                            Motor& right_motor)
     : left_motor_(left_motor),
@@ -18,7 +16,7 @@ MoonBotTankBase::MoonBotTankBase(Motor& left_motor,
 MoonBotTankBase::~MoonBotTankBase(void) {}
 
 int MoonBotTankBase::begin(const bool reverse_dir,
-                        const bool enc_enable) {
+                           const bool enc_enable) {
   int ret;
   if (reverse_dir) {
     ret = begin(true, false, enc_enable);
@@ -121,16 +119,20 @@ void MoonBotTankBase::wheelSpacingSet(int correct, float space_cm) {
   if (space_cm > 0) {
     wheel_spacing_ = space_cm;
   }
-  wheel_spacing_ = wheel_spacing_*(100+correct)/100.0;
+  wheel_spacing_ = wheel_spacing_*correct/100.0;
 }
 
-void MoonBotTankBase::rpmCorrection(int lrpm_correct,
-                                  int rrpm_correct) {
-  if (lrpm_correct >= 0) {
-    left_motor_.rpmCorrection(lrpm_correct);
-  }
-  if (rrpm_correct >= 0) {
-    right_motor_.rpmCorrection(rrpm_correct);
+void MoonBotTankBase::rpmCorrection(int percent) {
+  percent = 100-percent;
+  if (percent > 0) {
+    int left_offset = percent/2;
+    left_motor_.rpmCorrection(100-left_offset);
+    right_motor_.rpmCorrection(100-left_offset+percent);
+  } else {
+    percent = -percent;
+    int left_offset = percent/2;
+    left_motor_.rpmCorrection(100+left_offset);
+    right_motor_.rpmCorrection(100+left_offset-percent);
   }
 }
 

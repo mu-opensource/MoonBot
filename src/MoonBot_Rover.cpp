@@ -9,9 +9,10 @@
 #include <MoonBot_TankBase.h>
 
 extern Adafruit_NeoPixel onBoardLED;
+extern MoonBotTankBase TankBase;
 
-MoonBotRover::MoonBotRover(MuVisionSensor& Mu, MoonBotServo& head)
-    : Mu_(Mu) {
+MoonBotRover::MoonBotRover(MuVisionSensor& mu)
+    : Mu_(mu) {
 }
 
 MoonBotRover::~MoonBotRover(void) {

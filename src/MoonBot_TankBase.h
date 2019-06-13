@@ -23,7 +23,7 @@ class MoonBotTankBase {
   MoonBotTankBase& operator=(const MoonBotTankBase &) = delete;
   MoonBotTankBase(const MoonBotTankBase&) = delete;
 
-  int begin(const bool reverse_dir = true,
+  int begin(const bool reverse_dir = false,
             const bool enc_enable = true);
   int begin(const bool left_reverse_dir,
             const bool right_reverse_dir,
@@ -35,10 +35,18 @@ class MoonBotTankBase {
    * <int begin(left_reverse_dir, right_reverse_dir, enc_enable)> for
    * <writeStep()> && <writeRpm()> && <writeDistance()> to be available.
    */
-  void forward(unsigned int rpm = 30) {writeRpm(rpm, rpm);}
-  void backward(unsigned int rpm = 30) {writeRpm(-rpm, -rpm);}
-  void turnLeft(unsigned int rpm = 30) {writeRpm(-rpm, rpm);}
-  void turnRight(unsigned int rpm = 30) {writeRpm(rpm, -rpm);}
+  void forward(unsigned int step, unsigned int rpm = 30) {
+    writeDistance(rpm, step);
+  }
+  void backward(unsigned int step, unsigned int rpm = 30) {
+    writeDistance(-rpm, step);
+  }
+  void turnLeft(unsigned int step, unsigned int rpm = 30) {
+    writeAngle(-rpm, step);
+  }
+  void turnRight(unsigned int step, unsigned int rpm = 30) {
+    writeAngle(rpm, step);
+  }
   void stop(void) {write(0, 0);}
 
   void writeStep(int rpm, uint32_t step,
@@ -50,17 +58,18 @@ class MoonBotTankBase {
   void writeAngle(int rpm, uint32_t angle);
 
   void wheelSpacingSet(int correct, float space_cm = 0);
-  void rpmCorrection(int lrpm_correct, int rrpm_correct);
+  void rpmCorrection(int percent);
   void distanceCorrection(int percent);
 
  private:
   inline bool motorDirectionReverseCheck(int left_speed, int right_speed);
 
+  unsigned int distance_step_ms_ = 200;
+  unsigned int angle_step_ms_ = 300;
   Motor& left_motor_;
   Motor& right_motor_;
   float wheel_spacing_ = MOONBOT_WHEEL_SPACING;
 };
 
-extern MoonBotTankBase TankBase;
 
 #endif /* MOONBOT_MOONBOT_WHEEL_H_ */

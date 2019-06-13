@@ -18,8 +18,8 @@ enum lsm303_axes_t {
   kDirZ,
 };
 enum lsm303_acc_angle_t {
+  kAccRoll,
   kAccPitch,
-  kAccRoll
 };
 enum imu_state_t {
   kIMUShake,
@@ -78,7 +78,6 @@ class LSM303AGR_IMU_Sensor {
   int32_t offset_[3] = {0};
 
 };
-extern LSM303AGR_IMU_Sensor IMU;
 
 
 

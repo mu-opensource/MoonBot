@@ -8,8 +8,6 @@
 #include "pins_moonbot.h"
 #include "LSM303AGR_IMU_Sensor.h"
 
-LSM303AGR_IMU_Sensor IMU;
-
 LSM303AGR_IMU_Sensor::LSM303AGR_IMU_Sensor(void)
     : lsm_i2c_(MOONBOT_PIN_IMU_SDA, MOONBOT_PIN_IMU_SCL),
       Acc(&lsm_i2c_),
@@ -85,29 +83,16 @@ int LSM303AGR_IMU_Sensor::getMagAngle(void) {
   }
   lsm303_axes_t main_axes;
   lsm303_axes_t sub_axes;
-  int max_axes_offset = 0;
-  int32_t max_axes = int32_t(bit(sizeof(int32_t)*8-1));
-  for (int i = 0; i < 3; ++i) {
-    if (accelerometer[i]>max_axes) {
-      max_axes = accelerometer[i];
-      max_axes_offset = i;
-    }
-  }
-  switch (max_axes_offset) {
-    case kDirX:
-      main_axes = kDirZ;
-      sub_axes = kDirY;
-      break;
-    case kDirY:
-      main_axes = kDirZ;
-      sub_axes = kDirX;
-      break;
-    case kDirZ:
-      main_axes = kDirY;
-      sub_axes = kDirX;
-      break;
-    default:
-      return 0;
+  int32_t max_axes = max(max(abs(accelerometer[0]), abs(accelerometer[1])), abs(accelerometer[2]));
+  if (max_axes == accelerometer[0]) {
+    main_axes = kDirZ;
+    sub_axes = kDirY;
+  } else if (max_axes == accelerometer[1]) {
+    main_axes = kDirZ;
+    sub_axes = kDirX;
+  } else {
+    main_axes = kDirY;
+    sub_axes = kDirX;
   }
   return advGetMagAngle(main_axes, sub_axes);
 }

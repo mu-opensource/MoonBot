@@ -11,10 +11,11 @@
 #include "MuVisionSensor.h"
 #include "MoonBot_Servo.h"
 
+extern MuVisionSensor Mu;
+
 class MoonBotRover {
  public:
-  MoonBotRover(MuVisionSensor& Mu,
-               MoonBotServo& head);
+  MoonBotRover(MuVisionSensor& mu = Mu);
   virtual ~MoonBotRover(void);
   MoonBotRover& operator=(const MoonBotRover &) = delete;
   MoonBotRover(const MoonBotRover&) = delete;

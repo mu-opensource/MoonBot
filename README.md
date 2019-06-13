@@ -20,7 +20,7 @@ Major components in this library:
 * MoonBot.h -- include all driver in MoonBot
 * pins_moonbot.h -- pin definition functions for MoonBot
 * MoonBot_Motor.h -- MoonBot single motor driver
-* MoonBot_Wheel.h -- MoonBot wheel driver
+* MoonBot_TankBase.h -- MoonBot tank base driver
 * MoonBot_Servo.h -- MoonBot servo driver
 * MoonBot_WT2003S_MP3_Decoder.h -- MoonBot MP3 player driver
 * LSM303AGR_IMU_Sensor.h -- MoonBot IMU driver
@@ -56,41 +56,41 @@ Before you use **MoonBot** arduino library, you need install the following libra
 MoonBotServo myservo;
 int pos;
 void setup() {
-    myservo.attach(kServo1, true);          // attaches servo on servo port 1, and reverse directions
+    m_servo[kServo1].attach(kServo1, true); // attaches servo on servo port 1, and reverse directions
 }
 void loop() {
   for (pos = 0; pos <= 180; pos += 1) {     // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
-    myservo.write(pos);                     // tell servo to go to position in variable 'pos'
+    m_servo[kServo1].write(pos);            // tell servo to go to position in variable 'pos'
     delay(15);                              // waits 15ms for the servo to reach the position
   }
   for (pos = 180; pos >= 0; pos -= 1) {     // goes from 180 degrees to 0 degrees
-    myservo.write(pos);                     // tell servo to go to position in variable 'pos'
+    m_servo[kServo1].write(pos);            // tell servo to go to position in variable 'pos'
     delay(15);                              // waits 15ms for the servo to reach the position
   }
 }
 ```
 
-#### Wheel Driver
+#### TankBase Driver
 
 ```cpp
 #include <MoonBot.h>
 void setup() {
-    Wheel.rpmCorrection(0, 0);              // motor RPM(Revolutions Per Minute) correction(for function `writeRpm()`)
-    Wheel.distanceCorrection(0);            // wheel distance correction(for function `writeDistance()`)
-    Wheel.wheelSpacingSet(0);               // wheel spacing set and correction(for function `writeAngle()`)
-    Wheel.begin(true, false, true);         // enable wheel, reverse left motor directions and enable encoder component
+    TankBase.rpmCorrection(100);               // motor RPM(Revolutions Per Minute) correction(for function `writeRpm()`)
+    TankBase.distanceCorrection(100);          // wheel distance correction(for function `writeDistance()`)
+    TankBase.wheelSpacingSet(100);             // wheel spacing set and correction(for function `writeAngle()`)
+    TankBase.begin(true, false, true);         // enable wheel, reverse left motor directions and enable encoder component
 }
 void loop() {
-  Wheel.writeRpm(30, 30);                   // set left and right motor speed 30RPM
-  delay(5000);                              // wait 5000ms for the wheel to forward
-  Wheel.write(0, 0);                        // set the voltage of left and right motors to 0 to stop rotation
-  delay(5000);                              // stop 5000ms
-  Wheel.writeDistance(30, 100);             // wheel forward 100cm at 30RPM
-  while(Wheel.read(kLeftMotor) | Wheel.read(kRightMotor));      // waiting for wheel to stop
-  Wheel.writeAngle(30, 360);                // wheel rotate 360 clockwise
-  while(Wheel.read(kLeftMotor) | Wheel.read(kRightMotor));      // waiting for wheel to stop
-  delay(5000);                              // stop 5000ms
+  TankBase.writeRpm(30, 30);                   // set left and right motor speed 30RPM
+  delay(5000);                                 // wait 5000ms for the wheel to forward
+  TankBase.write(0, 0);                        // set the voltage of left and right motors to 0 to stop rotation
+  delay(5000);                                 // stop 5000ms
+  TankBase.writeDistance(30, 100);             // wheel forward 100cm at 30RPM
+  while(TankBase.read(kLeftMotor) | TankBase.read(kRightMotor));      // waiting for wheel to stop
+  TankBase.writeAngle(30, 360);                   // wheel rotate 360 clockwise
+  while(TankBase.read(kLeftMotor) | TankBase.read(kRightMotor));      // waiting for wheel to stop
+  delay(5000);                                 // stop 5000ms
 }
 ```
 
@@ -118,19 +118,15 @@ void ledSetColor(Adafruit_NeoPixel& led, uint32_t c) {
     }
     led.show();
 }
-Adafruit_NeoPixel eyes(
-    MOONBOT_EXTERNAL_LED_NUM,               // set led number
-    moonbotPortToPin(kPort1, kPortPin2),    // set led on port 1, pin 2
-    NEO_GRB + NEO_KHZ800);                  // set led type
 void setup() {
     onBoardLED.begin();                     // enable on board led
-    eyes.begin();                           // enable eyes led
+    moonbot_eyes.begin();                           // enable eyes led
 }
 void loop() {
     ledSetColor(onBoardLED, 0xFF00FF);      // set on board led color to purple
-    ledSetColor(eyes, 0x00FF00);            // set eyes to green
+    ledSetColor(moonbot_eyes, 0x00FF00);    // set eyes to green
     delay(500);                             // delay 500ms
-    ledSetColor(eyes, 0xFF00FF);            // set eyes to purple
+    ledSetColor(moonbot_eyes, 0xFF00FF);    // set eyes to purple
     ledSetColor(onBoardLED, 0x00FF00);      // set on board led color to green
     delay(500);                             // delay 500ms
 }
