@@ -113,8 +113,8 @@
 #define BEAT_FRACTION_DOUBLE          32
 #define BEAT_FRACTION_BREVE           64
 
-void buzzerPlayer(const unsigned int notation[][2], const size_t length, unsigned int beat_ms = 400);
-void buzzerPlayerPGM(const unsigned int notation[][2], const size_t length, unsigned int beat_ms = 400);
+void buzzerPlayer(const unsigned int notation[][2], const size_t length, unsigned int beat_ms = 500);
+void buzzerPlayerPGM(const unsigned int notation[][2], const size_t length, unsigned int beat_ms = 500);
 
 const unsigned int PROGMEM notationJingleBells[][2] = {
     {NOTE_E4, BEAT_FRACTION_HALF}, {NOTE_E4, BEAT_FRACTION_HALF}, {NOTE_E4, BEAT_FRACTION_WHOLE},
@@ -127,9 +127,6 @@ const unsigned int PROGMEM notationJingleBells[][2] = {
     {NOTE_D4, BEAT_FRACTION_WHOLE}, {NOTE_G4, BEAT_FRACTION_WHOLE},
 };
 const size_t PROGMEM sizeJingleBells = sizeof(notationJingleBells)/sizeof(unsigned int)/2;
-
-
-
 
 
 #endif /* MOONBOT_SRC_MOONBOT_BUZZERPLAYER_H_ */

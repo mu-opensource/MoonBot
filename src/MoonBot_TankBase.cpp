@@ -56,18 +56,18 @@ int MoonBotTankBase::read(motor_type_t motor_type) {
 }
 
 void MoonBotTankBase::writeStep(int rpm,
-                              uint32_t step,
-                              motor_type_t motor_type) {
+                                uint32_t step,
+                                motor_type_t motor_type) {
   switch (motor_type) {
     case kLeftMotor:
-      left_motor_.writeStep(rpm, step);
+      left_motor_.writeStep(step, rpm);
       break;
     case kRightMotor:
-      right_motor_.writeStep(rpm, step);
+      right_motor_.writeStep(step, rpm);
       break;
     default:
-      left_motor_.writeStep(rpm, step);
-      right_motor_.writeStep(rpm, step);
+      left_motor_.writeStep(step, rpm);
+      right_motor_.writeStep(step, rpm);
       break;
   }
 }

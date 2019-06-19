@@ -39,7 +39,6 @@ MoonBotMECH::~MoonBotMECH(void) {
 
 int MoonBotMECH::begin(void) {
   Mu_->CameraSetFPS(kFPSHigh);
-  Mu_->CameraSetAwb(kLockWhiteBalance);
   return 0;
 }
 
@@ -374,8 +373,6 @@ moonbot_mech_shoot_ball_t MoonBotMECH::shootBall(void) {
 
 bool MoonBotMECH::getAngle(int x, int y, int* angle_u, int* angle_l) {
   long k2 = long(x)*x+long(y)*y;
-//  printf("k2 = %ld\n", k2);
-//  return false;
   if (k2 > long(LOWER_ARM_LEN+UPPER_ARM_LEN)*long(LOWER_ARM_LEN+UPPER_ARM_LEN)) return false;
   *angle_u = (
       acos(double(LOWER_ARM_LEN*LOWER_ARM_LEN+UPPER_ARM_LEN*UPPER_ARM_LEN-k2)

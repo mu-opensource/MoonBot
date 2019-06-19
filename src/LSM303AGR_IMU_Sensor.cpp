@@ -54,6 +54,8 @@ bool LSM303AGR_IMU_Sensor::calibrateMag(void) {
       }
       offset_[i] = (extremum_[i][0]+extremum_[i][1])/2;
       if (millis() - start_time > 3000) {
+        offset_[0] = -offset_[0];
+        offset_[2] = -offset_[2];
         return true;
       }
     }
@@ -68,6 +70,8 @@ int LSM303AGR_IMU_Sensor::advGetMagAngle(lsm303_axes_t main_axes,
   if (Mag.GetAxes(magnetometer) != LSM303AGR_MAG_STATUS_OK) {
     return -1;
   }
+  magnetometer[0] = -magnetometer[0];
+  magnetometer[2] = -magnetometer[2];
   int angle = degrees(atan2(magnetometer[sub_axes]-offset_[sub_axes],
                             magnetometer[main_axes]-offset_[main_axes]))+0.5;
   if (angle < 0) {
@@ -102,6 +106,8 @@ int LSM303AGR_IMU_Sensor::getAccAngle(lsm303_acc_angle_t angle_type) {
   if (Acc.GetAxes(accelerometer) != LSM303AGR_ACC_STATUS_OK) {
     return -1;
   }
+  accelerometer[0] = -accelerometer[0];
+  accelerometer[2] = -accelerometer[2];
 
   int angle = degrees(atan2(accelerometer[kDirX],
                             accelerometer[kDirZ]))+0.5;

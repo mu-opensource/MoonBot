@@ -172,8 +172,9 @@ int Motor::read(void) {
 }
 
 int Motor::readRpm(void) {
-  int sign = digitalRead(pin_dir_)==HIGH ? 1:-1;
-  return sign*current_rev_*60*100/(2*MOONBOT_MOTOR_REDUCTION_RATION)/rpm_correction_;
+  int reverse = reverse_dir_ ? -1:1;
+  int sign = digitalRead(pin_dir_)==HIGH ? -reverse:reverse;
+  return sign*(int32_t)current_rev_*60*100/(2*MOONBOT_MOTOR_REDUCTION_RATION)/(int32_t)rpm_correction_;
 }
 
 void Motor::motorIrq(void) {

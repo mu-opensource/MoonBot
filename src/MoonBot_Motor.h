@@ -64,8 +64,8 @@ private:
   bool en_rpm_event_ = false;
 
   const moonbot_motor_t motor_type_;
-  uint8_t rpm_correction_ = 0;
-  uint8_t distance_correction_ = 0;
+  uint8_t rpm_correction_ = 100;
+  uint8_t distance_correction_ = 100;
   bool enc_enable_ = false;
   uint8_t distance_per_circle_ = 0;
   uint8_t speed_vol_ = 0;
