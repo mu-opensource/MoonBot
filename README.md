@@ -43,11 +43,11 @@ Download .zip libraries and install (Sketch -> Include Library -> Add .ZIP Libra
 * MoonBot (on this page, click the green "Clone or download" button)
 * [MuVisionSensorIII](https://github.com/mu-opensource/MuVisionSensorIII)
 
-Install via Arduino Library Manager (Tools -> Manage Libraries...)
-* [Servo](https://www.ardu-badge.com/Servo)
-* [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
-* [AsyncDelay](https://www.ardu-badge.com/AsyncDelay)
-* [SoftwareWire](https://www.ardu-badge.com/SoftwareWire)
+Install via Arduino Library Manager (Tools -> Manage Libraries... then search for the library name)
+* Servo
+* Adafruit_NeoPixel
+* AsyncDelay
+* SoftwareWire
 
 MoonBot also uses these libraries that are included with default Arduino installation
 * SoftwareSerial
