@@ -38,6 +38,7 @@ We have included code for **Arduino ATmega 1280** only, **DO NOT** use moonbot l
 
 To program **MoonBot** in Arduino IDE, you need to install the following libraries first:
 [`How to Installing Additional Arduino Libraries?`](https://www.arduino.cc/en/Guide/Libraries/?setlang=en)
+
 Download .zip libraries and install (Sketch -> Include Library -> Add .ZIP Library ...)
 * MoonBot (on this page, click the green "Clone or download" button)
 * [MuVisionSensorIII](https://github.com/mu-opensource/MuVisionSensorIII)
