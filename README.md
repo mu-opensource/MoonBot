@@ -36,14 +36,21 @@ We have included code for **Arduino ATmega 1280** only, **DO NOT** use moonbot l
 
 ### Before you use
 
-Before you use **MoonBot** arduino library, you need install the following library first:
+To program **MoonBot** in Arduino IDE, you need to install the following libraries first:
 [`How to Installing Additional Arduino Libraries?`](https://www.arduino.cc/en/Guide/Libraries/?setlang=en)
+
+Download .zip libraries and install (Sketch -> Include Library -> Add .ZIP Library ...)
+* MoonBot (on this page, click the green "Clone or download" button)
 * [MuVisionSensorIII](https://github.com/mu-opensource/MuVisionSensorIII)
-* [Servo](https://www.ardu-badge.com/Servo)
-* [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
-* [AsyncDelay](https://www.ardu-badge.com/AsyncDelay)
+
+Install via Arduino Library Manager (Tools -> Manage Libraries... then search for the library name)
+* Servo
+* Adafruit_NeoPixel
+* AsyncDelay
+* SoftwareWire
+
+MoonBot also uses these libraries that are included with default Arduino installation
 * SoftwareSerial
-* [SoftwareWire](https://www.ardu-badge.com/SoftwareWire)
 * Wire
 
 ### Simple Example
