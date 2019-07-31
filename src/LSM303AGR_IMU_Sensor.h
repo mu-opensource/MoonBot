@@ -62,6 +62,8 @@ class LSM303AGR_IMU_Sensor {
   bool on(imu_state_t imu_state);
   bool calibrateMag(void);
   int16_t temperature(void);
+  float temperatureC(void);
+  float temperatureF(void);
 
   LSM303AGR_ACC_Sensor Acc;
   LSM303AGR_MAG_Sensor Mag;

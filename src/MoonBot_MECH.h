@@ -75,7 +75,8 @@ class MoonBotMECH {
 
  protected:
   void SetVision(MuVisionType vision_type);
-  void UpdateResult(MuVisionType vision_type);
+  bool UpdateResult(MuVisionType vision_type);
+  void SetZoom(MuVsCameraZoom zoom);
 
   MuVisionSensor* Mu_;
   MoonBotServo& claw_;
@@ -110,6 +111,8 @@ class MoonBotMECH {
 
   int claw_x = 0;
   int claw_y = 0;
+  uint32_t zoom_count_ = 0;
+  MuVsCameraZoom zoom_now_ = kZoom1;
 };
 
 

@@ -88,7 +88,7 @@ void loop() {
   delay(5000);                                 // stop 5000ms
   TankBase.writeDistance(30, 100);             // wheel forward 100cm at 30RPM
   while(TankBase.read(kLeftMotor) | TankBase.read(kRightMotor));      // waiting for wheel to stop
-  TankBase.writeAngle(30, 360);                   // wheel rotate 360 clockwise
+  TankBase.writeAngle(30, 360);                // wheel rotate 360 clockwise
   while(TankBase.read(kLeftMotor) | TankBase.read(kRightMotor));      // waiting for wheel to stop
   delay(5000);                                 // stop 5000ms
 }
@@ -113,21 +113,19 @@ void loop() {
 ```cpp
 #include <MoonBot.h>
 void ledSetColor(Adafruit_NeoPixel& led, uint32_t c) {
-    for (uint16_t i = 0; i < led.numPixels(); ++i) {
-        led.setPixelColor(i, c);
-    }
+    led.fill(c, 0, 0);
     led.show();
 }
 void setup() {
-    onBoardLED.begin();                     // enable on board led
-    moonbot_eyes.begin();                           // enable eyes led
+    LED.begin();                            // enable controller LED
+    moonbot_eyes.begin();                   // enable eyes LED
 }
 void loop() {
-    ledSetColor(onBoardLED, 0xFF00FF);      // set on board led color to purple
+    ledSetColor(LED, 0xFF00FF);             // set controller LED color to purple
     ledSetColor(moonbot_eyes, 0x00FF00);    // set eyes to green
     delay(500);                             // delay 500ms
     ledSetColor(moonbot_eyes, 0xFF00FF);    // set eyes to purple
-    ledSetColor(onBoardLED, 0x00FF00);      // set on board led color to green
+    ledSetColor(LED, 0x00FF00);             // set controller LED color to green
     delay(500);                             // delay 500ms
 }
 ```
@@ -137,6 +135,7 @@ void loop() {
 ```cpp
 #include <MoonBot.h>
 void setup() {
+    LED.begin();                                // enable controller LED
     IMU.enable();                               // enable IMU
     IMU.calibrateMag();                         // IMU magnetometer correction
 }
@@ -151,11 +150,18 @@ void loop() {
     Serial.print("pitch = ");                   // print angle
     Serial.println(pitch);
 
-    if (IMU.on(kIMUFreeFall)) {                 // is IMU on free fall?
-        Serial.println("IMU is shaking!");
-    }
-    if (IMU.on(kIMUShake)) {                    // is IMU on shake?
-        Serial.println("IMU is free fall!");
+    if (IMU.on(kIMUShake)) {
+        // if IMU on shake
+        LED.fill(0xFF0000, 0, 0);               // LED show red
+        LED.show();
+    } else if (IMU.on(kIMUFreeFall)) {
+        // if IMU on free fall
+        LED.fill(0x00FF00, 0, 0);               // LED show green
+        LED.show();   
+    } else {
+        // close controller LED
+        LED.clear();
+        LED.show();
     }
 }
 ```

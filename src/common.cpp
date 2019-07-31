@@ -90,7 +90,7 @@ void moonbotInit(int start_button) {
 
 bool isButtonPressed(int key_num) {
   if (digitalRead(key_num) == LOW) {
-    while(digitalRead(key_num) == HIGH);
+    while(digitalRead(key_num) == LOW);
     return true;
   }
   return false;

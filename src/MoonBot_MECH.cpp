@@ -146,19 +146,34 @@ void MoonBotMECH::SetVision(MuVisionType vision_type) {
   }
 }
 
-void MoonBotMECH::UpdateResult(MuVisionType vision_type) {
-  Mu_->GetValue(vision_type, kStatus);
-  switch (vision_type) {
-    case VISION_BALL_DETECT:
-      ball_x_ = Mu_->GetValue(vision_type, kXValue);
-      break;
-    case VISION_SHAPE_CARD_DETECT:
-    case VISION_TRAFFIC_CARD_DETECT:
-    case VISION_NUM_CARD_DETECT:
-      card_x_ = Mu_->GetValue(vision_type, kXValue);
-      break;
-    default:
-      break;
+bool MoonBotMECH::UpdateResult(MuVisionType vision_type) {
+  if (Mu_->UpdateResult(vision_type, false)&vision_type) {
+    switch (vision_type) {
+      case VISION_BALL_DETECT:
+        if (Mu_->read(vision_type, kStatus)) {
+          ball_x_ = Mu_->GetValue(vision_type, kXValue);
+        }
+        break;
+      case VISION_SHAPE_CARD_DETECT:
+      case VISION_TRAFFIC_CARD_DETECT:
+      case VISION_NUM_CARD_DETECT:
+        if (Mu_->read(vision_type, kStatus)) {
+          card_x_ = Mu_->GetValue(vision_type, kXValue);
+        }
+        break;
+      default:
+        break;
+    }
+    return true;
+  }
+  return false;
+}
+
+void MoonBotMECH::SetZoom(MuVsCameraZoom zoom) {
+  if (zoom_now_ != zoom) {
+    zoom_now_ = zoom;
+    zoom_count_ = 0;
+    Mu_->CameraSetZoom(zoom_now_);
   }
 }
 
@@ -186,8 +201,30 @@ bool MoonBotMECH::searchBall(void) {
         break;
     }
   }
+  // set different zoom
+//  zoom_count_++;
+//  int upper_arm_angle = upper_arm_.read();
+//  if (zoom_count_%5 == 4) {
+//    if (upper_arm_angle >= upper_arm_init_+10) {
+//      if (zoom_now_ == kZoom4) {
+//        SetZoom(kZoom2);
+//      } else {
+//        SetZoom(MuVsCameraZoom(zoom_now_+1));
+//      }
+//    } if (upper_arm_angle >= upper_arm_init_+5) {
+//      if (zoom_now_ == kZoom3) {
+//        SetZoom(kZoom1);
+//      } else {
+//        SetZoom(MuVsCameraZoom(zoom_now_+1));
+//      }
+//    } else {
+//      SetZoom(kZoom1);
+//    }
+//  }
   SetVision(VISION_BALL_DETECT);
-  UpdateResult(VISION_BALL_DETECT);
+  if (UpdateResult(VISION_BALL_DETECT) == false) {
+    return false;
+  }
   if (Mu_->read(VISION_BALL_DETECT, kStatus)) {
     TankBase.write(0, 0);
     return true;
@@ -205,7 +242,9 @@ moonbot_mech_grab_ball_t MoonBotMECH::grabBall(void) {
   static bool is_grab = false;
   is_time2search_ball_.start(time2search_ball_, AsyncDelay::MILLIS);
   SetVision(VISION_BALL_DETECT);
-  UpdateResult(VISION_BALL_DETECT);
+  if (UpdateResult(VISION_BALL_DETECT) == false) {
+    return kFollowBall;
+  }
   if (Mu_->read(VISION_BALL_DETECT, kStatus) == 0) {
     TankBase.write(0, 0);
     is_grab = false;
@@ -260,7 +299,9 @@ moonbot_mech_grab_ball_t MoonBotMECH::grabBall(void) {
 
 bool MoonBotMECH::searchCard(void) {
   SetVision(card_type_);
-  UpdateResult(card_type_);
+  if (UpdateResult(card_type_) == false) {
+    return false;
+  }
   if (Mu_->read(card_type_, kStatus)) {
     TankBase.write(0, 0);
     return true;
@@ -299,7 +340,9 @@ bool MoonBotMECH::searchCard(void) {
 
 moonbot_mech_shoot_ball_t MoonBotMECH::shootBall(void) {
   SetVision(card_type_);
-  UpdateResult(card_type_);
+  if (UpdateResult(card_type_) == false) {
+    return kFollowCard;
+  }
   if (Mu_->read(card_type_, kStatus) == 0) {
     TankBase.write(0, 0);
     upper_arm_.write(upper_arm_grabbed_);
@@ -345,26 +388,26 @@ moonbot_mech_shoot_ball_t MoonBotMECH::shootBall(void) {
     lower_arm_.setTargetAngle(lower_arm_grabbed_, 2);
     upper_arm_.setTargetAngle(upper_arm_grabbed_, 2);
     MoonBotServo::moveAllServoToTarget();
-    TankBase.write(-150, -150);
+    TankBase.write(-120, -120);
     delay(2000);
     TankBase.write(0, 0);
     upper_arm_.setTargetAngle(upper_arm_init_, 2);
     lower_arm_.setTargetAngle(lower_arm_init_, 2);
     MoonBotServo::moveAllServoToTarget();
-    switch (random(2)) {
-      case 0:
-        TankBase.write(-150, 150);
-        delay(2000);
-        TankBase.write(0, 0);
-        break;
-      case 1:
-        TankBase.write(150, -150);
-        delay(2000);
-        TankBase.write(0, 0);
-        break;
-      default:
-        break;
-    }
+//    switch (random(2)) {            // remove action: turn around in 19.06.21
+//      case 0:
+//        TankBase.write(-150, 150);
+//        delay(2000);
+//        TankBase.write(0, 0);
+//        break;
+//      case 1:
+//        TankBase.write(150, -150);
+//        delay(2000);
+//        TankBase.write(0, 0);
+//        break;
+//      default:
+//        break;
+//    }
     return kShootedBall;
   }
 

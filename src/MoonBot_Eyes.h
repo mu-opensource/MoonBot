@@ -27,6 +27,32 @@ void theaterChaseRainbow(Adafruit_NeoPixel& led, uint8_t wait);
 // The colours are a transition r - g - b - back to r.
 uint32_t WheelColor(Adafruit_NeoPixel& led, byte WheelPos);
 
+enum moonbot_look_t {
+  kEyesLookUp,
+  kEyesLookDown,
+  kEyesLookLeft,
+  kEyesLookRight,
+};
+void MoonBotEyesLook(Adafruit_NeoPixel& led, moonbot_look_t look_tpye, uint32_t color);
+enum moonbot_eyes_scroll_t {
+  kEyesScrollUp,
+  kEyesScrollDown,
+  kEyesScrollLeft,
+  kEyesScrollRight,
+};
+void MoonBotEyesScroll(Adafruit_NeoPixel& led,
+                       moonbot_eyes_scroll_t scroll_tpye,
+                       uint32_t color,
+                       uint8_t wait = 50);
+enum moonbot_eyes_t {
+  kEyesLeft,
+  kEyesRight,
+  kEyesBoth,
+};
+void MoonBotEyesCircle(Adafruit_NeoPixel& led,
+                       uint32_t color,
+                       moonbot_eyes_t eyes_type = kEyesBoth,
+                       uint8_t wait = 50);
 
 
 #endif /* MOONBOT_SRC_MOONBOT_EYES_H_ */

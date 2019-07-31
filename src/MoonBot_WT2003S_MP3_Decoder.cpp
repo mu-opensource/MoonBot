@@ -1,16 +1,15 @@
 #include <MoonBot_WT2003S_MP3_Decoder.h>
 
-WT2003S::WT2003S() {
+WT2003S::WT2003S()
+    : _hwSerialPort(nullptr),
+      _swSerialPort(nullptr),
+      _busyPin(NOT_A_PIN) {
 
 }
 
 void WT2003S::begin(SoftwareSerial &serialPort) {
-  _hwSerialPort = NULL;
   _swSerialPort = &serialPort;
-
   _swSerialPort->begin(9600);
-
-  _busyPin = NULL;
 
   for (uint8_t indi = 0; indi < MP3_NUM_CMD_BYTES; indi++) {
     commandBytes[indi] = 0x00;
@@ -19,11 +18,7 @@ void WT2003S::begin(SoftwareSerial &serialPort) {
 
 void WT2003S::begin(HardwareSerial &serialPort) {
   _hwSerialPort = &serialPort;
-  _swSerialPort = NULL;
-
   _hwSerialPort->begin(9600);
-
-  _busyPin = NULL;
 
   for (uint8_t indi = 0; indi < MP3_NUM_CMD_BYTES; indi++) {
     commandBytes[indi] = 0x00;
@@ -169,7 +164,7 @@ uint8_t WT2003S::setEQ(uint8_t eqType) {
 }
 
 bool WT2003S::isPlaying(void) {
-  if (_busyPin == NULL) {
+  if (_busyPin == NOT_A_PIN) {
     return false;
   }
   if (digitalRead(_busyPin) == HIGH)

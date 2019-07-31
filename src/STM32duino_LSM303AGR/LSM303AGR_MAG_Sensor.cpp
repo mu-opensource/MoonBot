@@ -335,6 +335,7 @@ LSM303AGR_MAG_StatusTypeDef LSM303AGR_MAG_Sensor::GetFS(float* fullScale)
  */
 LSM303AGR_MAG_StatusTypeDef LSM303AGR_MAG_Sensor::SetFS(float fullScale)
 {
+  fullScale = sizeof(fullScale);
   return LSM303AGR_MAG_STATUS_OK;
 }
 

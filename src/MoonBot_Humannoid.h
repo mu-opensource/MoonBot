@@ -34,6 +34,9 @@ class MoonBotHumannoid {
   MoonBotHumannoid& operator=(const MoonBotHumannoid &) = delete;
   MoonBotHumannoid(const MoonBotHumannoid&) = delete;
 
+  // suggest: wait time =  nod_offset
+  void nod(uint8_t nod_offset = 15,
+           unsigned long wait = 15);
   void armShake(moonbot_humannoid_arm_t arm_type,
                 uint8_t shake_offset,
                 unsigned long wait);
