@@ -166,6 +166,12 @@ int16_t LSM303AGR_IMU_Sensor::temperature(void) {
 
   return (temp[1]<<8) | temp[0];
 }
+float LSM303AGR_IMU_Sensor::temperatureC(void) {
+  return temperature()/256.0+25;
+}
+float LSM303AGR_IMU_Sensor::temperatureF(void) {
+  return temperatureC()*1.8+32;
+}
 
 
 

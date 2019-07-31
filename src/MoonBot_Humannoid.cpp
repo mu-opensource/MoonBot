@@ -33,6 +33,33 @@ MoonBotHumannoid::MoonBotHumannoid(MuVisionSensor& Mu,
 
 MoonBotHumannoid::~MoonBotHumannoid(void) {}
 
+void MoonBotHumannoid::nod(uint8_t nod_offset,
+                           unsigned long wait) {
+  int angle = head_.read();
+  int angle_write = angle;
+  for (; angle_write <= angle+nod_offset; ++angle_write) {
+    if (angle_write>180 || angle_write<0) {
+      continue;
+    }
+    head_.write(angle_write);
+    delay(wait);
+  }
+  for (; angle_write >= angle-nod_offset; --angle_write) {
+    if (angle_write>180 || angle_write<0) {
+      continue;
+    }
+    head_.write(angle_write);
+    delay(wait);
+  }
+  for (; angle_write <= angle; ++angle_write) {
+    if (angle_write>180 || angle_write<0) {
+      continue;
+    }
+    head_.write(angle_write);
+    delay(wait);
+  }
+}
+
 void MoonBotHumannoid::armShake(moonbot_humannoid_arm_t arm_type,
                                 uint8_t shake_offset,
                                 unsigned long wait) {
@@ -100,7 +127,7 @@ void MoonBotHumannoid::swing(moonbot_humannoid_motor_t motor_type,
         return;
     }
     delay(1);
-  } while (wheel_speed!=speed);
+  } while (wheel_speed!=-speed*2/3);
   head_.write(head_angle);
   delay(wait*3);
   TankBase.write(0, 0);

@@ -104,17 +104,17 @@ enum motor_pin_t {
 
 const uint8_t PROGMEM moonbot_port[][2] = {
     //S1    S2
-    //TX    RX
-    //SDA   SCL
+    //RX    TX
+    //SCL   SDA
     { 12,   A3 },             //P1
-    { 16,   17 },             //P2
+    { 17,   16 },             //P2
     { 11,   A4 },             //P3
     { 3,    A5 },             //P4
-    { SDA,  SCL },            //P5
+    { SCL,  SDA },            //P5
     { 2,    A6 },             //P6
-    { 18,   19 },             //P7
+    { 19,   18 },             //P7
     { 13,   A7 },             //P8
-    { 14,   15 },             //P9
+    { 15,   14 },             //P9
 };
 const uint8_t PROGMEM moonbot_servo[][3] = {
     { MOONBOT_PIN_SERVO1,   MOONBOT_PIN_SERVO1_SHDN,    MOONBOT_PIN_SERVO1_STATE},

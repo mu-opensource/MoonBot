@@ -84,8 +84,10 @@ void Motor::write(int vol) {
   en_rpm_event_ = false;
   if (vol > 0) {
     SetSpeed(vol, reverse_dir_);
-  } else {
+  } else if (vol < 0) {
     SetSpeed(-vol, !reverse_dir_);
+  } else {
+    SetSpeed(0, 0xFF);
   }
 }
 
@@ -140,10 +142,14 @@ void Motor::rpmEvent(void) {
 //    start_enc_count_ = current_enc_count;
 //  }
   // 4795 ms per 10W time
+
+  unsigned long time_now = micros();
+  // rpm = 1000000us * 60s/min / reduction_ration / time_pass / 2
+  current_rev_ = ((uint32_t)1000000)/(time_now-time_start_);
   if (en_rpm_event_) {
-    unsigned long time_now = micros();
-    // rpm = 1000000us * 60s/min / reduction_ration / time_pass / 2
-    current_rev_ = ((uint32_t)1000000)/(time_now-time_start_);
+//    unsigned long time_now = micros();
+//    // rpm = 1000000us * 60s/min / reduction_ration / time_pass / 2
+//    current_rev_ = ((uint32_t)1000000)/(time_now-time_start_);
     uint8_t vol = speed_vol_;
     // FIXME calculate time per pulse in function `writeRpm`
     // and compare time here, it mast faster than it is now
@@ -154,8 +160,8 @@ void Motor::rpmEvent(void) {
       vol += 1;
       SetSpeed(vol, 0xFF);
     }
-    time_start_ = time_now;
   }
+  time_start_ = time_now;
 }
 
 void Motor::writeDistance(int rpm, uint32_t distance_cm) {

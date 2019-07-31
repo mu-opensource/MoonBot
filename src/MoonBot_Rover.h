@@ -24,9 +24,16 @@ class MoonBotRover {
   void end(void);
   void runTrafficOnly(void);
   void runTrafficNumber(void);
-  // TODO avoid/follow line
+  int followBallBegin(void);
+  void followBallEnd(void);
+  void runFollowBall(void);
+
+  uint8_t ball_center_x_ = 50;
 
  private:
+  const int ball_search_rpm_ = 100;
+  int ball_x_ = 50;
+
  protected:
   MuVisionSensor& Mu_;
 //  MoonBotServo& head_;
