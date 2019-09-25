@@ -206,12 +206,10 @@ void MoonBotRover::followBallEnd(void) {
 
 void MoonBotRover::runFollowBall(void) {
   if (Mu_.UpdateResult(VISION_BALL_DETECT, false) & VISION_BALL_DETECT) {
-//    printf("time = %lu\n", millis());
     MuVsVisionState* vision_state = Mu_.GetVisionState(VISION_BALL_DETECT);
     if (vision_state->detect) {
       uint8_t ball_width = vision_state->vision_result[0].width;
       ball_x_ = vision_state->vision_result[0].x_value;
-//      printf("  ball_x = %hu, ball_width = %hu\n", ball_x_, ball_width);
       if (ball_x_ < ball_center_x_-10) {
         TankBase.write(-ball_search_rpm_, ball_search_rpm_);
       } else if (ball_x_ > ball_center_x_ + 10) {
@@ -225,11 +223,6 @@ void MoonBotRover::runFollowBall(void) {
       }
     } else {
       TankBase.write(0, 0);
-//      if (ball_x_ > ball_center_x_) {
-//        TankBase.write(ball_search_rpm_, -ball_search_rpm_);
-//      } else {
-//        TankBase.write(-ball_search_rpm_, ball_search_rpm_);
-//      }
     }
   }
 }

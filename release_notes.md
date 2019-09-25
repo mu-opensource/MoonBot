@@ -1,3 +1,10 @@
+MoonBot V1.0.4
+==============
+* 1.update motor driver
+* 2.delete unused code
+* 3.add example: rover follow ball
+* 4.fixed bug: after initializing twice, the motor may occasionally fail to rotate.
+
 MoonBot V1.0.3
 ==============
 * 1.add rover follow ball in `MoonBot_Rover.h`
