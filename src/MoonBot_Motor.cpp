@@ -40,7 +40,8 @@ int Motor::begin(const bool reverse_dir,
   pinMode(pin_speed_, OUTPUT);
   pinMode(pin_dir_, OUTPUT);
   digitalWrite(pin_speed_, LOW);
-   if (enc_enable_ != enc_enable) {
+  speed_vol_ = 0;
+  if (enc_enable_ != enc_enable) {
     enc_enable_ = enc_enable;
     if (enc_enable) {
       switch (motor_type_) {
@@ -113,9 +114,7 @@ void Motor::writeRpm(int rpm) {
     return;
   }
   if (read() == 0 || (rpm>0) != (read()>0)) {
-    if (rpm != 0) {
-      write(constrain(rpm*3, -255, 255));
-    }
+    write(constrain(rpm*3, -100, 100));
   }
   time_start_ = micros();
   // wheel rev per minute => motor rev per second
