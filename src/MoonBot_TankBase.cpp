@@ -34,71 +34,10 @@ int MoonBotTankBase::begin(const bool left_reverse_dir,
   return 0;
 }
 
-//void MoonBotTankBase::write(int left_vol, int right_vol) {
-//  if (motorDirectionReverseCheck(left_vol, right_vol)) {
-//    left_motor_.write(0);
-//    right_motor_.write(0);
-//    delay(100);
-//  }
-//  left_motor_.write(left_vol);
-//  right_motor_.write(right_vol);
-//}
-
-// way 1
 void MoonBotTankBase::write(int left_vol, int right_vol) {
-//  if (motorDirectionReverseCheck(left_vol, right_vol)) {
-    int left_speed = left_motor_.read();
-    int right_speed = right_motor_.read();
-    do {
-      if (left_speed != left_vol) {
-        left_speed += left_vol>left_speed ? 1:-1;
-        left_motor_.write(left_speed);
-      }
-      if (right_speed != right_vol) {
-        right_speed += right_vol>right_speed ? 1:-1;
-        right_motor_.write(right_speed);
-      }
-      delay(1);
-    } while (left_speed != left_vol || right_speed != right_vol);
-//  }
-//  left_motor_.write(left_vol);
-//  right_motor_.write(right_vol);
+  left_motor_.write(left_vol);
+  right_motor_.write(right_vol);
 }
-
-// way 2
-//void MoonBotTankBase::write(int left_vol, int right_vol) {
-//  if (motorDirectionReverseCheck(left_vol, right_vol)) {
-//    int left_speed = left_motor_.read();
-//    int right_speed = right_motor_.read();
-//    left_motor_.write(0);
-//    right_motor_.write(0);
-//    unsigned int time2stop = max(abs(left_speed), abs(right_speed));
-//    delay(time2stop);
-//  }
-//  int left_speed = left_motor_.read();
-//  int right_speed = right_motor_.read();
-////  if (abs(left_speed) < 30 || abs(right_speed) < 30) {
-//  do {
-//    if (left_speed != left_vol) {
-//      left_speed += left_vol>left_speed ? 1:-1;
-//      left_motor_.write(left_speed);
-//    }
-//    if (right_speed != right_vol) {
-//      right_speed += right_vol>right_speed ? 1:-1;
-//      right_motor_.write(right_speed);
-//    }
-////    unsigned int time2stop = max(abs(left_speed-left_speed_),
-////                                 abs(right_speed-right_speed_));
-////    delayMicroseconds(time2stop*time2stop/15);
-////    delayMicroseconds(500);
-//    delay(1);
-//  } while (left_speed != left_vol || right_speed != right_vol);
-////  } else {
-////    left_motor_.write(left_vol);
-////    right_motor_.write(right_vol);
-////  }
-////  printf("time:%lu\n", millis()-time_start);
-//}
 
 int MoonBotTankBase::read(motor_type_t motor_type) {
   switch (motor_type) {
@@ -129,13 +68,6 @@ void MoonBotTankBase::writeStep(int rpm,
 }
 
 void MoonBotTankBase::writeRpm(int left_rpm, int right_rpm) {
-//  if (motorDirectionReverseCheck(left_rpm, right_rpm)) {
-////    left_motor_.write(0);
-////    right_motor_.write(0);
-////    delay(100);
-//    MoonBotTankBase::write(0,0);
-//  }
-  MoonBotTankBase::write(constrain(left_rpm*3, -255, 255),constrain(right_rpm*3, -255, 255));
   left_motor_.writeRpm(left_rpm);
   right_motor_.writeRpm(right_rpm);
 }
@@ -200,20 +132,4 @@ void MoonBotTankBase::distanceCorrection(int percent) {
     right_motor_.distanceCorrection(percent);
   }
 }
-
-bool MoonBotTankBase::motorDirectionReverseCheck(int left_speed, int right_speed) {
-  if ((read(kLeftMotor)!=0) && (left_speed!=0)
-      && (left_speed>0)!=(read(kLeftMotor)>0)) {
-    return true;
-  }
-  if ((read(kRightMotor)!=0) && (right_speed!=0)
-      && (right_speed>0)!=(read(kRightMotor)>0)) {
-    return true;
-  }
-  return false;
-}
-
-
-
-
 

@@ -62,8 +62,6 @@ class MoonBotTankBase {
   void distanceCorrection(int percent);
 
  private:
-  inline bool motorDirectionReverseCheck(int left_speed, int right_speed);
-
   unsigned int distance_step_ms_ = 200;
   unsigned int angle_step_ms_ = 300;
   Motor& left_motor_;

@@ -48,6 +48,7 @@ Install via Arduino Library Manager (Tools -> Manage Libraries... then search fo
 * Adafruit_NeoPixel
 * AsyncDelay
 * SoftwareWire
+* MsTimer2
 
 MoonBot also uses these libraries that are included with default Arduino installation
 * SoftwareSerial

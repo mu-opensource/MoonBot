@@ -90,7 +90,7 @@ class MoonBotMECH {
 
   // servo angle init
   uint8_t lower_arm_init_ = 0;
-  uint8_t lower_arm_grabbed_ = 120;
+  uint8_t lower_arm_grabbed_ = 115;
   uint8_t upper_arm_grabbed_ = 20;
   // claw open angle
   uint8_t claw_open_ = 120;
@@ -101,7 +101,7 @@ class MoonBotMECH {
   // Angle of upper servo search ball
   uint8_t upper_arm_init_ = 100;
   uint8_t upper_arm_shoot_ = upper_arm_grabbed_+70;
-  uint8_t lower_arm_shoot_ = lower_arm_grabbed_-65;
+  uint8_t lower_arm_shoot_ = lower_arm_grabbed_-70;
 
   const int ball_search_rpm_ = 100;
   const int ball_grab_rpm_ = 80;

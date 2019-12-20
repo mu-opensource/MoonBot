@@ -39,7 +39,8 @@ void MoonBotServo::detach(void) {
 }
 
 void MoonBotServo::write(int value) {
-  value += angle_offset_;
+  value = value+angle_offset_;
+  value = constrain(value, 0, 180);
   if (reverse_) {
     value = 180 - value;
   }
@@ -51,13 +52,16 @@ int MoonBotServo::read() {
   if (reverse_) {
     ret = 180 - ret;
   }
-  return ret-angle_offset_;
+  ret = ret-angle_offset_;
+  return constrain(ret, 0, 180);
 }
 
 void MoonBotServo::reverse(bool state) {
-  int angle = this->read();
-  reverse_ = state;
-  this->write(angle);
+  if (reverse_ != state) {
+    int angle = this->read();
+    reverse_ = state;
+    this->write(angle);
+  }
 }
 
 uint8_t MoonBotServo::attach_port(moonbot_servo_t servo_port) {
@@ -86,17 +90,18 @@ bool MoonBotServo::isPowerOverload(void) {
 }
 
 void MoonBotServo::setTargetAngle(int angle, unsigned int speed) {
-  angle += angle_offset_;
-  angle = constrain(angle, 0, 180);
   if (speed == 0) {
     return;
   }
-  int angle_current = read();
-  if (angle == angle_current) return;
+  if (angle == MoonBotServo::read()) return;
+  angle += angle_offset_;
+  angle = constrain(angle, 0, 180);
+  if (reverse_) {
+    angle = 180 - angle;
+  }
   mb_servo[servo_port_].stop_angle = angle;
   mb_servo[servo_port_].speed = speed;
   bitSet(moonbot_servo_action_t::is_acting, servo_port_);
-  power(true);
 }
 
 void MoonBotServo::stop(void) {
@@ -119,7 +124,7 @@ bool MoonBotServo::moveAllServoToTarget(unsigned long timeToWait_ms) {
       for (int i = 0; i < kServoNum; ++i) {
         if (mb_servo[i].servo
             && bitRead(moonbot_servo_action_t::is_acting, i)) {
-          int angle_now = mb_servo[i].servo->MoonBotServo::read();
+          int angle_now = mb_servo[i].servo->Servo::read();
           int angle_delta = mb_servo[i].stop_angle-angle_now;
           int sign = angle_delta>0 ? 1:-1;
           int abs_angle = abs(angle_delta);
@@ -128,7 +133,7 @@ bool MoonBotServo::moveAllServoToTarget(unsigned long timeToWait_ms) {
           } else {
             bitClear(moonbot_servo_action_t::is_acting, i);
           }
-          mb_servo[i].servo->write(angle_now+sign*abs_angle);
+          mb_servo[i].servo->Servo::write(angle_now+sign*abs_angle);
         }
       }
     }

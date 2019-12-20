@@ -22,8 +22,10 @@ public:
 
   int begin(const bool reverse_dir = false,
             const bool enc_enable = true);
+  bool isBegon() { return is_begon_; }
+  void writeFast(int vol);
   void write(int vol);
-  int read(void);
+  int read();
   /*
    * enc_enable must be set as <true> in function <int begin(reverse_dir, enc_enable)> for
    * <write_step()>&&<write_rev()>&&<write_distance()> to be available.
@@ -52,17 +54,23 @@ public:
 
 private:
   void SetSpeed(uint8_t vol, uint8_t dir);
+  bool fade();
 
   // IRQ function
   friend void motor1Interrupt(void);
   friend void motor2Interrupt(void);
+  friend void motorFadeInterrupt(void);
   void motorIrq(void);
   inline void stepEvent(void);
   inline void rpmEvent(void);
 
+  static bool is_timmer_begon_;
+  bool is_fading_ = false;
   bool en_step_event_ = false;
   bool en_rpm_event_ = false;
 
+  int speed_vol_target_ = 0;
+  bool is_begon_ = false;
   const moonbot_motor_t motor_type_;
   uint8_t rpm_correction_ = 100;
   uint8_t distance_correction_ = 100;
@@ -73,11 +81,11 @@ private:
   uint32_t speed_rev_ = 0;
   uint32_t current_rev_ = 0;
   uint32_t stop_enc_count_ = 0;
-  unsigned long time_start_ = 0;
   uint8_t pin_speed_ = NOT_A_PIN;
   uint8_t pin_dir_ = NOT_A_PIN;
   uint8_t pin_enc_ = NOT_A_PIN;
   uint8_t reverse_dir_ = 0;
+  unsigned long time_start_ = 0;
 };
 
 extern Motor Motor1;

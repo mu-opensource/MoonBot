@@ -8,7 +8,6 @@ AsyncDelay time2response_;
 MoonBotServo& larm_servo_ = m_servo[3];
 MoonBotServo& rarm_servo_ = m_servo[0];
 MoonBotServo& head_servo_ = m_servo[2];
-MuVisionSensorUart mu_uart_(&Serial3, MU_VISION_SENSOR_DEFAULT_ADDRESS);
 
 void setup() {
   // Hardware enable
@@ -33,6 +32,7 @@ void setup() {
   time2response_.start(3000, AsyncDelay::MILLIS);
   moonbot_eyes.clear();
   moonbot_eyes.show();
+  Mu.LsBegin(LS_PROXIMITY_ENABLE);
   Mu.VisionBegin(VISION_BODY_DETECT);
   Mu.VisionSetLevel(VISION_BODY_DETECT, kLevelAccuracy);
   rarm_servo_.write(90);
@@ -126,8 +126,7 @@ void loop() {
     }
     // respond to wave every 3s
     if (time2response_.isExpired()) {
-      uint8_t ir_value;
-      mu_uart_.Get(0x50, &ir_value);
+      uint8_t ir_value = Mu.LsReadProximity();
       if (ir_value > 10) {
         time2response_.restart();
         time2greeting_.restart();

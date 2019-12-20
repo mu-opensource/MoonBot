@@ -6,22 +6,41 @@
  */
 
 #include <MoonBot_Motor.h>
+#include <MsTimer2.h>
 
 Motor Motor1(kMotor1);
 Motor Motor2(kMotor2);
 
+bool Motor::is_timmer_begon_ = false;
 void motor1Interrupt(void) {
   Motor1.motorIrq();
 }
 void motor2Interrupt(void) {
   Motor2.motorIrq();
 }
+void motorFadeInterrupt(void) {
+  bool fade_state = false;
+  if (Motor1.is_fading_) {
+    fade_state |= Motor1.fade();
+  }
+  if (Motor2.is_fading_) {
+    fade_state |= Motor2.fade();
+  }
+  if (!fade_state) {
+    Motor::is_timmer_begon_ = false;
+    MsTimer2::stop();
+  }
+}
 
 Motor::Motor(moonbot_motor_t motor_type)
     : motor_type_(motor_type) {
+  if (!is_timmer_begon_) {
+    MsTimer2::set(1, motorFadeInterrupt);
+  }
 }
 
 Motor::~Motor() {
+  is_fading_ = false;
   SetSpeed(0, 0xFF);
 }
 
@@ -32,8 +51,24 @@ void Motor::SetSpeed(uint8_t vol, uint8_t dir) {
   digitalWrite(pin_dir_, dir);
 }
 
+bool Motor::fade() {
+  int vol_now = this->read();
+  if (speed_vol_target_ != vol_now) {
+    int delta = speed_vol_target_-vol_now;
+    vol_now += constrain(delta, -2, 2);
+    writeFast(vol_now);
+    return true;
+  }
+  is_fading_ = false;
+  return false;
+}
+
 int Motor::begin(const bool reverse_dir,
                  const bool enc_enable) {
+  if (is_begon_ && (reverse_dir_ == reverse_dir ? LOW:HIGH)
+      && enc_enable_ == enc_enable) {
+    return 0;
+  }
   reverse_dir_ = reverse_dir ? LOW:HIGH;
   pin_speed_ = moonbotMotorToPin(motor_type_, kSpeed);
   pin_dir_ = moonbotMotorToPin(motor_type_, kDirection);
@@ -41,6 +76,7 @@ int Motor::begin(const bool reverse_dir,
   pinMode(pin_dir_, OUTPUT);
   digitalWrite(pin_speed_, LOW);
   speed_vol_ = 0;
+  MsTimer2::stop();
   if (enc_enable_ != enc_enable) {
     enc_enable_ = enc_enable;
     if (enc_enable) {
@@ -71,6 +107,7 @@ int Motor::begin(const bool reverse_dir,
       }
     }
   }
+  is_begon_ = true;
   return 0;
 }
 void Motor::rpmCorrection(uint8_t percent) {
@@ -83,6 +120,24 @@ void Motor::distanceCorrection(uint8_t percent) {
 
 void Motor::write(int vol) {
   en_rpm_event_ = false;
+  int vol_now = this->read();
+  vol = constrain(vol, -255, 255);
+  if (vol != vol_now) {
+    if (vol > vol_now) {
+      writeFast(vol_now+2);
+    } else {
+      writeFast(vol_now-2);
+    }
+    speed_vol_target_ = vol;
+    is_fading_ = true;
+    if (!is_timmer_begon_) {
+      is_timmer_begon_ = true;
+      MsTimer2::start();
+    }
+  }
+}
+
+void Motor::writeFast(int vol) {
   if (vol > 0) {
     SetSpeed(vol, reverse_dir_);
   } else if (vol < 0) {
@@ -114,7 +169,7 @@ void Motor::writeRpm(int rpm) {
     return;
   }
   if (read() == 0 || (rpm>0) != (read()>0)) {
-    write(constrain(rpm*3, -100, 100));
+    write(constrain(rpm*3, -255, 255));
   }
   time_start_ = micros();
   // wheel rev per minute => motor rev per second
@@ -145,10 +200,7 @@ void Motor::rpmEvent(void) {
   unsigned long time_now = micros();
   // rpm = 1000000us * 60s/min / reduction_ration / time_pass / 2
   current_rev_ = ((uint32_t)1000000)/(time_now-time_start_);
-  if (en_rpm_event_) {
-//    unsigned long time_now = micros();
-//    // rpm = 1000000us * 60s/min / reduction_ration / time_pass / 2
-//    current_rev_ = ((uint32_t)1000000)/(time_now-time_start_);
+  if (en_rpm_event_ && !is_fading_) {
     uint8_t vol = speed_vol_;
     // FIXME calculate time per pulse in function `writeRpm`
     // and compare time here, it mast faster than it is now

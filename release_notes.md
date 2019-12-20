@@ -1,3 +1,8 @@
+MoonBot V1.0.5
+==============
+* 1.update motor driver, now TankBase works correctly
+* 2.increased functional stability
+
 MoonBot V1.0.4
 ==============
 * 1.update motor driver

@@ -377,6 +377,7 @@ moonbot_mech_shoot_ball_t MoonBotMECH::shootBall(void) {
         break;
       case 1:
         upper_arm_.setTargetAngle(upper_arm_shoot_, 2);
+        MoonBotServo::moveAllServoToTarget(200);
         lower_arm_.setTargetAngle(lower_arm_shoot_, 2);
         MoonBotServo::moveAllServoToTarget();
         break;
@@ -386,6 +387,7 @@ moonbot_mech_shoot_ball_t MoonBotMECH::shootBall(void) {
     claw_.setTargetAngle(claw_open_, 2);
     MoonBotServo::moveAllServoToTarget();
     lower_arm_.setTargetAngle(lower_arm_grabbed_, 2);
+    MoonBotServo::moveAllServoToTarget(100);
     upper_arm_.setTargetAngle(upper_arm_grabbed_, 2);
     MoonBotServo::moveAllServoToTarget();
     TankBase.write(-120, -120);

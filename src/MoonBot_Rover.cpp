@@ -18,7 +18,7 @@ MoonBotRover::MoonBotRover(MuVisionSensor& mu)
 }
 
 MoonBotRover::~MoonBotRover(void) {
-  end();
+//  end();
 }
 
 int MoonBotRover::begin(void) {

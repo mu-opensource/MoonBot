@@ -48,7 +48,7 @@ class WT2003S {
   void begin(SoftwareSerial &serialPort);
   void begin(HardwareSerial &serialPort = Serial);
 
-  uint8_t play(char* fileName);
+  uint8_t play(const char* fileName);
   uint8_t setVolume(uint8_t volumeLevel);
   uint8_t stop(void);
   void pause(void);

@@ -117,7 +117,7 @@ uint8_t WT2003S::playTrackNumber(uint8_t trackNumber) {
   return (getResponse());
 }
 
-uint8_t WT2003S::play(char* fileName) {
+uint8_t WT2003S::play(const char* fileName) {
   commandBytes[0] = 0xA1;//MP3_COMMAND_PLAY_FILE_IN_ROOT;
   commandBytes[1] = fileName[0];
   commandBytes[2] = fileName[1];
